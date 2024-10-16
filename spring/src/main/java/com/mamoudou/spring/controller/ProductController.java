@@ -29,6 +29,12 @@ public class ProductController {
         return new ResponseEntity<>(this.productRepository.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping(path = "/products/{id}")
+    public ResponseEntity<Product> getProduct(@PathVariable int id){
+        Optional<Product> product = this.productRepository.findById(id);
+        return product.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @PutMapping(path = "/products/update")
     public ResponseEntity<Product> updateProduct(@RequestBody Product product){
         Optional<Product> existingProduct = this.productRepository.findById(product.getId());
