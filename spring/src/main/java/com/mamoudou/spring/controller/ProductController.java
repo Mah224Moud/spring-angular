@@ -2,11 +2,14 @@ package com.mamoudou.spring.controller;
 
 import com.mamoudou.spring.entity.Product;
 import com.mamoudou.spring.repository.ProductRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,9 +23,20 @@ public class ProductController {
 
 
     @PostMapping(path = "/product")
-    public ResponseEntity<Product> addProduct(@RequestBody Product product){
-        return new ResponseEntity<>(this.productRepository.save(product), HttpStatus.CREATED);
+    public ResponseEntity<?> addProduct(@RequestBody @Valid Product product, BindingResult result) {
+        if (result.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+
+            result.getFieldErrors().forEach(error -> {
+                errors.put(error.getField(), error.getDefaultMessage());
+            });
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        }
+
+        Product savedProduct = this.productRepository.save(product);
+        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
+
 
     @GetMapping(path = "/products")
     public ResponseEntity<List<Product>> getProducts(){
@@ -36,7 +50,16 @@ public class ProductController {
     }
 
     @PutMapping(path = "/products/update")
-    public ResponseEntity<Product> updateProduct(@RequestBody Product product){
+    public ResponseEntity<?> updateProduct(@RequestBody @Valid Product product, BindingResult result){
+        if (result.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+
+            result.getFieldErrors().forEach(error -> {
+                errors.put(error.getField(), error.getDefaultMessage());
+            });
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        }
+
         Optional<Product> existingProduct = this.productRepository.findById(product.getId());
         if(existingProduct.isPresent()){
             Product newProduct = existingProduct.get();
@@ -45,7 +68,6 @@ public class ProductController {
             newProduct.setPrice(product.getPrice());
 
             this.productRepository.save(newProduct);
-
             return new ResponseEntity<>(newProduct, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
