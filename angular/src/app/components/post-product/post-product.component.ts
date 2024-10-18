@@ -28,7 +28,7 @@ export class PostProductComponent {
   postCustomer(){
     console.log(this.postPostForm.value);
     if (this.postPostForm.valid) {
-      this.productService.postCustomer(this.postPostForm.value).subscribe((res) => {
+      this.productService.postProduct(this.postPostForm.value).subscribe((res) => {
         console.log(res);
       })
     }

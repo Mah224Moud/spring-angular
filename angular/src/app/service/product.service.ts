@@ -11,7 +11,11 @@ export class ProductService {
 
   constructor(private http: HttpClient) { }
 
-  postCustomer(product: any): Observable<any> {
+  postProduct(product: any): Observable<any> {
     return this.http.post(URL + "/api/product", product);
+  }
+
+  getAllProducts(): Observable<any> {
+    return this.http.get(URL + "/api/products")
   }
 }
