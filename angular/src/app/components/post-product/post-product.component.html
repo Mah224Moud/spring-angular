@@ -1,0 +1,22 @@
+<p>Ajouter un produit</p>
+
+
+<div>
+    <form [formGroup] = "postPostForm">
+        <div>
+            <label for="">Nom</label>
+            <input type="text" name="name" id="name" formControlName="name" required>
+        </div> <br>
+        <div>
+            <label for="">Description</label>
+            <input type="text" name="description" id="description" formControlName="description" required>
+        </div> <br>
+        <div>
+            <label for="">Prix</label>
+            <input type="number" name="price" id="price" formControlName="price" required>
+        </div> <br>
+        <div>
+            <button type="submit" (click)="postCustomer()">Envoyer</button>
+        </div>
+    </form>
+</div>
